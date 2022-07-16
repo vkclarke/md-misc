@@ -1,5 +1,10 @@
 #include <stdio.h>
 
+/*
+Lookup table for converting "duxels" (single byte containing two 4-bit pixels)
+to two-bit (1-bit per pixel) values. These can be shifted left when applying to
+a 1bpp pixel row depending on the horizontal position of the duxel.
+*/
 const unsigned char duxel_lut[256] = {
 	0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
 	0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
