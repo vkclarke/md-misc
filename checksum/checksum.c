@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
 
 	// Report checksum
 	if (args.print == true)
-		printf("%s: This ROM's standard checksum is: %d (0x%04X).\n", args.progname, checksum, checksum);
+		printf("%s: Checksum calculated for this ROM is: %d (0x%04X).\n", args.progname, checksum, checksum);
 
 	// Apply checksum
 	if (args.apply == true) {
