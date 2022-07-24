@@ -1,8 +1,11 @@
-// Tool to calculate standard 16-bit (big-endian) checksums for Mega Drive ROMs.
-// C99 compliant.
+/*
+ * Tool to calculate 16-bit (big endian) checksums for Mega Drive ROMs.
+ * C99 compliant.
+ */
 
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <stdbool.h>
 
 struct args {
@@ -15,39 +18,39 @@ struct args {
 
 int main(int argc, char *argv[])
 {
-	// Declarations
+	/* Declarations */
 	FILE *romfile;
 	uint16_t checksum, word;
 
-	// Initialize argument values
+	/* Initialize argument values */
 	args.progname = NULL;
 	args.romfile = NULL;
 	args.validargs = 0;
 	args.apply = false;
 	args.print = false;
 
-	// Get program filename
+	/* Get program filename */
 	args.progname = argv[0];
 	for (int i = 0; argv[0][i] != '\0'; i++) {
 		if ((argv[0][i] == '\\') || (argv[0][i] == '/'))
 			args.progname = &argv[0][i + 1];
 	}
 
-	// If no arguments, print usage string
+	/* If no arguments, print usage string */
 	if (argc == 1) {
 		printf("USAGE:\n"
-			"\t%s [ROM] [options]\n"
+			"\t\"%s [ROM] [options]\"\n"
 			"\tOR\n"
-			"\t%s [options] [ROM]\n"
+			"\t\"%s [options] [ROM]\"\n"
 			"\n"
 			"OPTIONS:\n"
-			"\t-a\tApply calculated checksum to ROM file.\n"
+			"\t-a\tApply calculated checksum to ROM header.\n"
 			"\t-p\tPrint calculated checksum.\n",
 			args.progname, args.progname);
-		return 1;
+		exit(1);
 	}
 	
-	// Parse remaining arguments
+	/* Parse remaining arguments */
 	for (int i = 1; i < argc; i++) {
 		bool unknown = false;
 		if (argv[i][0] == '-') {
@@ -84,22 +87,22 @@ int main(int argc, char *argv[])
 			printf("%s: Ignoring unknown argument \"%s\".\n", args.progname, argv[i]);
 	}
 
-	// Test requested file
+	/* Test requested file */
 	if (args.romfile == NULL) {
 		printf("%s: No ROM file specified.\n", args.progname);
-		return 1;
+		exit(1);
 	} else if (args.validargs == 0) {
 		printf("%s: No operations given for ROM file. Defaulting to printing checksum...\n", args.progname);
 		args.print = true;
 	}
 	
-	// Open requested file
+	/* Open requested file */
 	if (!(romfile = fopen(args.romfile, "rb+"))) {
 		printf("%s: Cannot open file \"%s\".\n", args.progname, args.romfile);
-		return 1;
+		exit(1);
 	}
 
-	// Main loop
+	/* Main loop */
 	fseek(romfile, 0x200, SEEK_SET);
 	checksum = 0;
 	for (int i = 0; feof(romfile) == 0; i++) {
@@ -113,18 +116,18 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	// Report checksum
+	/* Report checksum */
 	if (args.print == true)
 		printf("%s: Checksum calculated for this ROM is: %d (0x%04X).\n", args.progname, checksum, checksum);
 
-	// Apply checksum
+	/* Apply checksum */
 	if (args.apply == true) {
 		fseek(romfile, 0x18E, SEEK_SET);
 		fputc((unsigned char)(checksum >> 8), romfile);
 		fputc((unsigned char)checksum, romfile);
 	}
 
-	// Quit
+	/* Quit */
 	fclose(romfile);
 	return 0;
 }
