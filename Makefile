@@ -1,8 +1,15 @@
 # edit this line to specify a desired compiler
 CC = cc
 
-CCFLAGS := -Wall -O3
+CCFLAGS := -Wall
 LDFLAGS := -static
+
+# handle conditional debug options
+ifeq ($(DEBUG), 1)
+	CCFLAGS += -Og -fsanitize=address -fsanitize=undefined
+else
+	CCFLAGS += -O3 -s
+endif
 
 all: 4bppto1bpp checksum
 
