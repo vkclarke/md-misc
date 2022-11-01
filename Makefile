@@ -1,13 +1,16 @@
+# edit this line to specify a desired compiler
+CC = cc
+
 CCFLAGS := -Wall -O3
 LDFLAGS := -static
 
 all: 4bppto1bpp checksum
 
 4bppto1bpp: 4bppto1bpp.c
-	cc $(CCFLAGS) -o $@ $^ $(LDFLAGS)
+	$(CC) $(CCFLAGS) -o $@ $^ $(LDFLAGS)
 
 checksum: checksum.c
-	cc $(CCFLAGS) -o $@ $^ $(LDFLAGS)
+	$(CC) $(CCFLAGS) -o $@ $^ $(LDFLAGS)
 
 # dependency rules
 4bppto1bpp.c: headers
