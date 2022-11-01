@@ -10,8 +10,11 @@ checksum: checksum.c
 	cc $(CCFLAGS) -o $@ $^ $(LDFLAGS)
 
 # dependency rules
-4bppto1bpp.c: common.h
-checksum.c: common.h
+4bppto1bpp.c: headers
+checksum.c: headers
+
+.PHONY: headers
+headers: common.h fixedint.h
 
 .PHONY: clean
 clean:
